@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from "react";
 import PianoKey, { IPianoKey } from "./PianoKey";
+import SongSelector, { ISong } from "./SongSelector";
 
 
 // 1. Khởi tạo dữ liệu
@@ -20,7 +21,65 @@ const pianoKeys: IPianoKey[] = [
   { note: 'B', frequency: 493.88, isBlack: false },
 ];
 //     Tạo mảng songs chứa danh sách các bài hát (id, tên, danh sách nốt và thời lượng).
-
+const songs: ISong[] = [
+  {
+    id: 'twinkle',
+    name: '⭐ Twinkle Twinkle Little Star',
+    notes: [
+      { note: 'C', duration: 500 },
+      { note: 'C', duration: 500 },
+      { note: 'G', duration: 500 },
+      { note: 'G', duration: 500 },
+      { note: 'A', duration: 500 },
+      { note: 'A', duration: 500 },
+      { note: 'G', duration: 1000 },
+      { note: 'F', duration: 500 },
+      { note: 'F', duration: 500 },
+      { note: 'E', duration: 500 },
+      { note: 'E', duration: 500 },
+      { note: 'D', duration: 500 },
+      { note: 'D', duration: 500 },
+      { note: 'C', duration: 1000 },
+    ],
+  },
+  {
+    id: 'happy-birthday',
+    name: '🎂 Happy Birthday',
+    notes: [
+      { note: 'C', duration: 400 },
+      { note: 'C', duration: 200 },
+      { note: 'D', duration: 600 },
+      { note: 'C', duration: 600 },
+      { note: 'F', duration: 600 },
+      { note: 'E', duration: 1200 },
+      { note: 'C', duration: 400 },
+      { note: 'C', duration: 200 },
+      { note: 'D', duration: 600 },
+      { note: 'C', duration: 600 },
+      { note: 'G', duration: 600 },
+      { note: 'F', duration: 1200 },
+    ],
+  },
+  {
+    id: 'mary-had-a-little-lamb',
+    name: '🐑 Mary Had A Little Lamb',
+    notes: [
+      { note: 'E', duration: 500 },
+      { note: 'D', duration: 500 },
+      { note: 'C', duration: 500 },
+      { note: 'D', duration: 500 },
+      { note: 'E', duration: 500 },
+      { note: 'E', duration: 500 },
+      { note: 'E', duration: 1000 },
+      { note: 'D', duration: 500 },
+      { note: 'D', duration: 500 },
+      { note: 'D', duration: 1000 },
+      { note: 'E', duration: 500 },
+      { note: 'G', duration: 500 },
+      { note: 'G', duration: 1000 },
+    ],
+  },
+];
 // Tao mang map phim tren ban phim sang note piano
 const keyMap: Record<string, string> = {
     'a': 'C',
@@ -43,6 +102,7 @@ const Piano: React.FC = () => {
 //         currentNote: nốt đang được chơi.
     const [currentNote, setCurrentNote] = useState<string>('');
 //         selectedSong: bài hát đang chọn.
+  const [selectedSong, setSelectedSong] = useState<string>('twinkle');
 //         isPlaying: trạng thái đang phát bài hát.
 //         audioContext: đối tượng Web Audio API để phát âm thanh.
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
@@ -73,7 +133,7 @@ const Piano: React.FC = () => {
 
 // 4. Xử lý phát âm thanh //này nữa thay bằng âm thanh kia
 //     Hàm playNote(frequency, duration) dùng Web Audio API để phát âm thanh với tần số và thời lượng tương ứng.
-    const playNote =  async (frequency: number, duration: number = 200) => {
+    const playNote =  async (frequency: number, duration: number = 200) => { // hiện tại duration mặc định là 200
         const ctx = audioContextRef.current;
         if (!ctx) return;
         if (ctx.state === "suspended") {
@@ -193,17 +253,15 @@ const Piano: React.FC = () => {
                     </div>
                 </div>
             </div>
-            {/* <button
-                onClick={async () => {
-                    if (audioContext && audioContext.state === "suspended") {
-                    await audioContext.resume();
-                    console.log("Audio unlocked!");
-                    }
-                }}
-                className="px-4 py-2 bg-blue-500 text-white rounded mb-4"
-                >
-                Start Piano
-            </button> */}
+            
+            {/* SongSelector */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <SongSelector
+                    selectedSong={selectedSong}
+                    onSongChange={setSelectedSong}
+                    songs={songs}
+                />
+            </div>
 
         </>
     )
