@@ -33,14 +33,14 @@ const PianoKey = ({pianoKey, isPressed, onPress}: PianoKeyProps) => {
                         pianoKey.isBlack ? 
                         //mau den
                         `bg-gray-800 text-white w-8 h-32 absolute transform -translate-x-1/2 z-10
-                        ${isPressed ? 'bg-gray-600' : 'hover:bg-gray-700' }`
+                        ${isPressed ? 'bg-gray-600 scale-95' : 'hover:bg-gray-700' }`
                         
                         //mau trang
                         : `bg-white text-gray-800 border border-gray-300 w-12 h-48 relative
-                        ${isPressed ? 'bg-gray-100' : 'hover:bg-gray-50'}`
+                        ${isPressed ? 'bg-gray-100 scale-95' : 'hover:bg-gray-50'}`
                     }
                     
-                    transition-colors duration-75 font-medium text-sm
+                    transition-colors transition-transform duration-75 font-medium text-sm
                     ${pianoKey.isBlack ? 'shadow-lg' : 'shadow-md'}
                     select-none active:scale-95
                 `}
