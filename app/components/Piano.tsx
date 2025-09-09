@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from "react";
 import PianoKey, { IPianoKey } from "./PianoKey";
+import PlayButton from "./PlayButton";
 import SongSelector, { ISong } from "./SongSelector";
 
 
@@ -102,8 +103,10 @@ const Piano: React.FC = () => {
 //         currentNote: nốt đang được chơi.
     const [currentNote, setCurrentNote] = useState<string>('');
 //         selectedSong: bài hát đang chọn.
-  const [selectedSong, setSelectedSong] = useState<string>('twinkle');
+    const [selectedSong, setSelectedSong] = useState<string>('twinkle');
 //         isPlaying: trạng thái đang phát bài hát.
+    const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const isPlayingRef = useRef(false);
 //         audioContext: đối tượng Web Audio API để phát âm thanh.
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
     const audioContextRef = useRef<AudioContext | null>(null);
@@ -188,14 +191,46 @@ const Piano: React.FC = () => {
 //         Tìm bài hát theo selectedSong.
 //         Lặp qua từng nốt trong bài hát, phát âm thanh và cập nhật trạng thái phím.
 //         Đợi đúng thời lượng mỗi nốt rồi chuyển sang nốt tiếp theo.
+    const playSong = async () => {
+        const song = songs.find(s => s.id === selectedSong);
+        //neu khong tim thay hoac dang phat thi return 
+        if(!song){
+            return;
+        }
+        setIsPlaying(true);
+        isPlayingRef.current = true; //update ref
+        //lap qua cac note cua song do
+        for(const noteData of song.notes){
+            if(!isPlayingRef.current) break; //pause
+            //tim key
+            const key = pianoKeys.find(k => k.note === noteData.note);
+            if(key){
+                playNote(key.frequency, noteData.duration);
+                setCurrentNote(noteData.note);
+                setPressedKeys(prev => new Set(prev).add(noteData.note));
 
-// 7. Render giao diện
-//     Hiển thị tiêu đề, trạng thái nốt đang chơi.
-//     Render các phím trắng và phím đen:
-//         Phím trắng: render theo thứ tự, mỗi phím là một component PianoKey.
-//         Phím đen: render tuyệt đối, đặt vị trí giữa các phím trắng.
-//     Render các nút điều khiển: chọn bài hát, nút phát bài hát.
-//     Hiển thị hướng dẫn sử dụng.
+                await new Promise(resolve => setTimeout(resolve, noteData.duration));
+
+                setPressedKeys(prev => {
+                    const newSet = new Set(prev);
+                    newSet.delete(noteData.note);
+                    return newSet;
+                });
+            }
+        }
+        setIsPlaying(false);
+        isPlayingRef.current = false; //update again
+        setCurrentNote('');
+    }
+
+    const handlePlayButton = () => {
+        if (isPlaying) {
+            setIsPlaying(false); // Dừng phát
+            isPlayingRef.current = false; //update again and again
+        } else {
+            playSong(); // Bắt đầu phát
+        }
+    };
 
     // lấy thông tin của note trắng và note đen
     const whiteKeys = pianoKeys.filter(key => !key.isBlack);
@@ -236,7 +271,7 @@ const Piano: React.FC = () => {
                     <div className = "absolute inset-0 flex pointer-events-none">
                         {blackKeys.map((key, index) => {
                            const positions = [36, 84, 180, 228, 276]; //du doan khoang cach
-                           return (
+                            return (
                             <div
                             key = {key.note}
                             className="absolute pointer-events-auto"
@@ -248,18 +283,25 @@ const Piano: React.FC = () => {
                                     onPress={async (note) => await handleKeyPress(note)}
                                 />
                             </div>
-                           );
+                            );
                         })}
                     </div>
                 </div>
             </div>
             
-            {/* SongSelector */}
+            {/* thanh dieu khien o duoi */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                {/* SongSelector */}
                 <SongSelector
                     selectedSong={selectedSong}
                     onSongChange={setSelectedSong}
                     songs={songs}
+                />
+                {/* PlayButton */}
+                <PlayButton 
+                    isPlaying = {isPlaying}
+                    
+                    onPlay={handlePlayButton}
                 />
             </div>
 
@@ -268,3 +310,10 @@ const Piano: React.FC = () => {
     }
 
 export default Piano
+// 7. Render giao diện
+//     Hiển thị tiêu đề, trạng thái nốt đang chơi.
+//     Render các phím trắng và phím đen:
+//         Phím trắng: render theo thứ tự, mỗi phím là một component PianoKey.
+//         Phím đen: render tuyệt đối, đặt vị trí giữa các phím trắng.
+//     Render các nút điều khiển: chọn bài hát, nút phát bài hát.
+//     Hiển thị hướng dẫn sử dụng.
