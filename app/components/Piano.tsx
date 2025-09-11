@@ -1,4 +1,5 @@
 'use client'
+import { Music } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import PianoKey, { IPianoKey } from "./PianoKey";
 import PlayButton from "./PlayButton";
@@ -23,63 +24,119 @@ const pianoKeys: IPianoKey[] = [
 ];
 //     Tạo mảng songs chứa danh sách các bài hát (id, tên, danh sách nốt và thời lượng).
 const songs: ISong[] = [
-  {
-    id: 'twinkle',
-    name: '⭐ Twinkle Twinkle Little Star',
-    notes: [
-      { note: 'C', duration: 500 },
-      { note: 'C', duration: 500 },
-      { note: 'G', duration: 500 },
-      { note: 'G', duration: 500 },
-      { note: 'A', duration: 500 },
-      { note: 'A', duration: 500 },
-      { note: 'G', duration: 1000 },
-      { note: 'F', duration: 500 },
-      { note: 'F', duration: 500 },
-      { note: 'E', duration: 500 },
-      { note: 'E', duration: 500 },
-      { note: 'D', duration: 500 },
-      { note: 'D', duration: 500 },
-      { note: 'C', duration: 1000 },
-    ],
-  },
-  {
-    id: 'happy-birthday',
-    name: '🎂 Happy Birthday',
-    notes: [
-      { note: 'C', duration: 400 },
-      { note: 'C', duration: 200 },
-      { note: 'D', duration: 600 },
-      { note: 'C', duration: 600 },
-      { note: 'F', duration: 600 },
-      { note: 'E', duration: 1200 },
-      { note: 'C', duration: 400 },
-      { note: 'C', duration: 200 },
-      { note: 'D', duration: 600 },
-      { note: 'C', duration: 600 },
-      { note: 'G', duration: 600 },
-      { note: 'F', duration: 1200 },
-    ],
-  },
-  {
-    id: 'mary-had-a-little-lamb',
-    name: '🐑 Mary Had A Little Lamb',
-    notes: [
-      { note: 'E', duration: 500 },
-      { note: 'D', duration: 500 },
-      { note: 'C', duration: 500 },
-      { note: 'D', duration: 500 },
-      { note: 'E', duration: 500 },
-      { note: 'E', duration: 500 },
-      { note: 'E', duration: 1000 },
-      { note: 'D', duration: 500 },
-      { note: 'D', duration: 500 },
-      { note: 'D', duration: 1000 },
-      { note: 'E', duration: 500 },
-      { note: 'G', duration: 500 },
-      { note: 'G', duration: 1000 },
-    ],
-  },
+    {
+        id: 'twinkle',
+        name: '⭐ Twinkle Twinkle Little Star',
+        notes: [
+            { note: 'C', duration: 500 },
+            { note: 'C', duration: 500 },
+            { note: 'G', duration: 500 },
+            { note: 'G', duration: 500 },
+            { note: 'A', duration: 500 },
+            { note: 'A', duration: 500 },
+            { note: 'G', duration: 1000 },
+            { note: 'F', duration: 500 },
+            { note: 'F', duration: 500 },
+            { note: 'E', duration: 500 },
+            { note: 'E', duration: 500 },
+            { note: 'D', duration: 500 },
+            { note: 'D', duration: 500 },
+            { note: 'C', duration: 1000 },
+            // Thêm đoạn lặp lại
+            { note: 'G', duration: 500 },
+            { note: 'G', duration: 500 },
+            { note: 'F', duration: 500 },
+            { note: 'F', duration: 500 },
+            { note: 'E', duration: 500 },
+            { note: 'E', duration: 500 },
+            { note: 'D', duration: 1000 },
+            { note: 'G', duration: 500 },
+            { note: 'G', duration: 500 },
+            { note: 'F', duration: 500 },
+            { note: 'F', duration: 500 },
+            { note: 'E', duration: 500 },
+            { note: 'E', duration: 500 },
+            { note: 'D', duration: 1000 },
+            { note: 'C', duration: 500 },
+            { note: 'C', duration: 500 },
+            { note: 'G', duration: 500 },
+            { note: 'G', duration: 500 },
+            { note: 'A', duration: 500 },
+            { note: 'A', duration: 500 },
+            { note: 'G', duration: 1000 },
+            { note: 'F', duration: 500 },
+            { note: 'F', duration: 500 },
+            { note: 'E', duration: 500 },
+            { note: 'E', duration: 500 },
+            { note: 'D', duration: 500 },
+            { note: 'D', duration: 500 },
+            { note: 'C', duration: 1000 },
+        ],
+    },
+    {
+        id: 'happy-birthday',
+        name: '🎂 Happy Birthday',
+        notes: [
+            { note: 'C', duration: 400 },
+            { note: 'C', duration: 200 },
+            { note: 'D', duration: 600 },
+            { note: 'C', duration: 600 },
+            { note: 'F', duration: 600 },
+            { note: 'E', duration: 1200 },
+            { note: 'C', duration: 400 },
+            { note: 'C', duration: 200 },
+            { note: 'D', duration: 600 },
+            { note: 'C', duration: 600 },
+            { note: 'G', duration: 600 },
+            { note: 'F', duration: 1200 },
+            // Thêm đoạn lặp lại
+            { note: 'C', duration: 400 },
+            { note: 'D', duration: 600 },
+            { note: 'A', duration: 600 },
+            { note: 'F', duration: 600 },
+            { note: 'E', duration: 600 },
+            { note: 'D', duration: 1200 },
+            { note: 'A#', duration: 400 },
+            { note: 'A#', duration: 200 },
+            { note: 'A', duration: 600 },
+            { note: 'F', duration: 600 },
+            { note: 'G', duration: 600 },
+            { note: 'F', duration: 1200 },
+        ],
+    },
+    {
+        id: 'mary-had-a-little-lamb',
+        name: '🐑 Mary Had A Little Lamb',
+        notes: [
+            { note: 'E', duration: 500 },
+            { note: 'D', duration: 500 },
+            { note: 'C', duration: 500 },
+            { note: 'D', duration: 500 },
+            { note: 'E', duration: 500 },
+            { note: 'E', duration: 500 },
+            { note: 'E', duration: 1000 },
+            { note: 'D', duration: 500 },
+            { note: 'D', duration: 500 },
+            { note: 'D', duration: 1000 },
+            { note: 'E', duration: 500 },
+            { note: 'G', duration: 500 },
+            { note: 'G', duration: 1000 },
+            // Thêm đoạn lặp lại
+            { note: 'E', duration: 500 },
+            { note: 'D', duration: 500 },
+            { note: 'C', duration: 500 },
+            { note: 'D', duration: 500 },
+            { note: 'E', duration: 500 },
+            { note: 'E', duration: 500 },
+            { note: 'E', duration: 1000 },
+            { note: 'E', duration: 500 },
+            { note: 'D', duration: 500 },
+            { note: 'D', duration: 500 },
+            { note: 'E', duration: 500 },
+            { note: 'D', duration: 500 },
+            { note: 'C', duration: 1500 },
+        ],
+    },
 ];
 // Tao mang map phim tren ban phim sang note piano
 const keyMap: Record<string, string> = {
@@ -108,6 +165,7 @@ const Piano: React.FC = () => {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const isPlayingRef = useRef(false);
 //         audioContext: đối tượng Web Audio API để phát âm thanh.
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
     const audioContextRef = useRef<AudioContext | null>(null);
 
@@ -126,12 +184,21 @@ const Piano: React.FC = () => {
         const handleKeyDown = async (e: KeyboardEvent) => {
             const note = keyMap[e.key.toLowerCase()];
             if (note) {
-                await handleKeyPress(note); //lấy hàm này cho cả click và keyboard
-
+                await startNote(note);
+            }
+        };
+        const handleKeyUp = (e: KeyboardEvent) => {
+            const note = keyMap[e.key.toLowerCase()];
+            if (note) {
+                stopNote(note);
             }
         };
         window.addEventListener("keydown", handleKeyDown);
-        return () => window.removeEventListener("keydown", handleKeyDown)
+        window.addEventListener("keyup", handleKeyUp);
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("keyup", handleKeyUp);
+        }
     }, []);
 
 // 4. Xử lý phát âm thanh //này nữa thay bằng âm thanh kia
@@ -160,30 +227,57 @@ const Piano: React.FC = () => {
         oscillator.stop(ctx.currentTime + duration / 1000);
     };
 
-// 5. Xử lý khi nhấn phím
-//     Hàm handleKeyPress(note):
-//         Tìm phím tương ứng trong pianoKeys.
-//         Gọi playNote để phát âm thanh.
-//         Cập nhật currentNote và pressedKeys để hiển thị trạng thái phím đang nhấn.
-    const handleKeyPress = async (note: string) => {
+    // Khai báo ref:
+    const oscillatorsRef = useRef<Record<string, {oscillator: OscillatorNode, gainNode: GainNode}>>({});
+
+    // startNote: ramp-up gain cho tiếng mềm mại
+    const startNote = async (note: string) => {
         const key = pianoKeys.find(k => k.note === note);
-        if (audioContext && audioContext.state === "suspended") {
-            await audioContext.resume();
+        const ctx = audioContextRef.current;
+        if (!key || !ctx) return;
+        if (ctx.state === "suspended") await ctx.resume();
+        if (oscillatorsRef.current[note]) return;
+
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+
+        oscillator.frequency.setValueAtTime(key.frequency, ctx.currentTime);
+        oscillator.type = 'sine';
+        gainNode.gain.setValueAtTime(0, ctx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.01);
+
+        oscillator.start(ctx.currentTime);
+
+        oscillatorsRef.current[note] = {oscillator, gainNode};
+        setCurrentNote(note);
+        setPressedKeys(prev => new Set(prev).add(note));
+    };
+
+    // stopNote: ramp-down gain cho tiếng mềm mại
+    const stopNote = (note: string) => {
+        const ctx = audioContextRef.current;
+        const oscObj = oscillatorsRef.current[note];
+        if (oscObj && ctx) {
+            const {oscillator, gainNode} = oscObj;
+            gainNode.gain.cancelScheduledValues(ctx.currentTime);
+            gainNode.gain.setValueAtTime(gainNode.gain.value, ctx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+            oscillator.stop(ctx.currentTime + 0.25);
+            oscillator.onended = () => {
+                gainNode.disconnect();
+                oscillator.disconnect();
+            };
+            delete oscillatorsRef.current[note];
         }
-        if(key){
-            console.log(`Dang cho note: ${note} voi frequency la: ${key.frequency}`)
-            playNote(key.frequency);
-            setCurrentNote(note);
-            setPressedKeys(prev => new Set(prev).add(note));
-            setTimeout(() => {
-                setPressedKeys(prev => {
-                const newSet = new Set(prev);
-                newSet.delete(note);
-                return newSet;
-                });
-            }, 150);
-        }
-    }
+        setPressedKeys(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(note);
+            return newSet;
+        });
+        setCurrentNote('');
+    };
 
 //         Sau 150ms, bỏ trạng thái nhấn phím.
 // 6. Xử lý phát bài hát
@@ -237,9 +331,19 @@ const Piano: React.FC = () => {
     const blackKeys = pianoKeys.filter(key => key.isBlack);
 
     return (
-        <>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-8">
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-6">
+                <Music className="text-purple-600 w-8 h-8" />
+                <h1 className="text-3xl font-bold text-gray-800">Simple Piano Mini App</h1>
+                <div className="ml-auto flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg">
+                    <span className="text-blue-600 font-medium">🎵 Current Note:</span>
+                    <span className="text-blue-800 font-bold text-lg">{currentNote || 'C'}</span>
+                </div>
+            </div>
+            {/* Khung hướng dẫn */}
             <div className="hidden md:block mb-4 text-center">
-                <div className="inline-flex gap-4 px-4 py-2 bg-gray-100 rounded shadow text-sm">
+                <div className="inline-flex gap-4 px-4 py-2 bg-gray-100 rounded shadow text-sm text-gray-700 font-semibold">
                     <span><b>A</b>: C</span>
                     <span><b>W</b>: C#</span>
                     <span><b>S</b>: D</span>
@@ -262,8 +366,9 @@ const Piano: React.FC = () => {
                         <div key={key.note} className="relative">
                             <PianoKey
                                 pianoKey={key} 
-                                isPressed = {pressedKeys.has(key.note)}//note co dang duoc bam hay khong
-                                onPress = {handleKeyPress}//ham xu ly su kien khi bam
+                                isPressed = {pressedKeys.has(key.note)}
+                                onPress = {startNote}
+                                onRelease = {stopNote}
                             />
                         </div>
                     ))}
@@ -280,7 +385,8 @@ const Piano: React.FC = () => {
                                 <PianoKey
                                     pianoKey={key}
                                     isPressed={pressedKeys.has(key.note)}
-                                    onPress={async (note) => await handleKeyPress(note)}
+                                    onPress={startNote}
+                                    onRelease={stopNote}
                                 />
                             </div>
                             );
@@ -305,7 +411,7 @@ const Piano: React.FC = () => {
                 />
             </div>
 
-        </>
+        </div>
     )
     }
 

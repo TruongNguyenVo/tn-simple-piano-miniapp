@@ -15,7 +15,8 @@ export interface IPianoKey{
 type PianoKeyProps = {
     pianoKey: IPianoKey;
     isPressed: boolean;
-    onPress: (note: string) => void
+    onPress: (note: string) => void;
+    onRelease?: (note: string) => void; // thêm dòng này
 };
 
 //Tao component PianoKey nhan vao PianoKeyPros
@@ -24,7 +25,7 @@ type PianoKeyProps = {
     // onMouseDown (may tinh), 
     // onTouchStart (dien thoai)
     //<span> la children neu black thi bottom-2 nguoc lai la bottom-4, children la pianoKey.note
-const PianoKey = ({pianoKey, isPressed, onPress}: PianoKeyProps) => {
+const PianoKey = ({pianoKey, isPressed, onPress, onRelease}: PianoKeyProps) => {
     return (
         <button
             className={`
@@ -45,8 +46,11 @@ const PianoKey = ({pianoKey, isPressed, onPress}: PianoKeyProps) => {
                     select-none active:scale-95
                 `}
 
-            onMouseDown={() => onPress(pianoKey.note)} //may tinh
-            onTouchStart={() => onPress(pianoKey.note)} //dien thoai
+            onMouseDown={() => onPress(pianoKey.note)}
+            onMouseUp={() => onRelease && onRelease(pianoKey.note)}
+            onMouseLeave={() => onRelease && onRelease(pianoKey.note)}
+            onTouchStart={() => onPress(pianoKey.note)}
+            onTouchEnd={() => onRelease && onRelease(pianoKey.note)}
         >
             <span
                 className={
