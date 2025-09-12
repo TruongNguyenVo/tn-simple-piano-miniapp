@@ -3,6 +3,7 @@ import { Music } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import PianoKey, { IPianoKey } from "./PianoKey";
 import PlayButton from "./PlayButton";
+import ShareSongModal from "./ShareSongModel";
 import SongSelector, { ISong } from "./SongSelector";
 
 
@@ -172,6 +173,7 @@ const Piano: React.FC = () => {
 //         pressedKeys: tập hợp các nốt đang được nhấn.
     const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
 
+    const [showShareModal, setShowShareModal] = useState(false);
 // Thêm state cho record
     const [isRecording, setIsRecording] = useState(false);
     const isRecordingRef = useRef(false);
@@ -219,12 +221,14 @@ const Piano: React.FC = () => {
             audioContextRef.current = context;
         }
         const handleKeyDown = async (e: KeyboardEvent) => {
+            if(showShareModal) return;
             const note = keyMap[e.key.toLowerCase()];
             if (note) {
                 await startNote(note);
             }
         };
         const handleKeyUp = (e: KeyboardEvent) => {
+            if(showShareModal) return;
             const note = keyMap[e.key.toLowerCase()];
             if (note) {
                 stopNote(note);
@@ -236,10 +240,13 @@ const Piano: React.FC = () => {
             window.removeEventListener("keydown", handleKeyDown);
             window.removeEventListener("keyup", handleKeyUp);
         }
-    }, []);
+    }, [showShareModal]);
+
     useEffect(() => {
     isRecordingRef.current = isRecording;
     }, [isRecording]);
+
+    //disable keyboard
 
 // 4. Xử lý phát âm thanh //này nữa thay bằng âm thanh kia
 //     Hàm playNote(frequency, duration) dùng Web Audio API để phát âm thanh với tần số và thời lượng tương ứng.
@@ -272,6 +279,8 @@ const Piano: React.FC = () => {
 
     // startNote: ramp-up gain cho tiếng mềm mại
     const startNote = async (note: string) => {
+        // console.log(showShareModal);
+        if(showShareModal) return;
         const key = pianoKeys.find(k => k.note === note);
         const ctx = audioContextRef.current;
         if (!key || !ctx) return;
@@ -323,6 +332,7 @@ const Piano: React.FC = () => {
 
     // stopNote: ramp-down gain cho tiếng mềm mại
     const stopNote = (note: string) => {
+        if(showShareModal) return;
         const ctx = audioContextRef.current;
         const oscObj = oscillatorsRef.current[note];
         if (oscObj && ctx) {
@@ -395,6 +405,9 @@ const Piano: React.FC = () => {
     // lấy thông tin của note trắng và note đen
     const whiteKeys = pianoKeys.filter(key => !key.isBlack);
     const blackKeys = pianoKeys.filter(key => key.isBlack);
+    // Tìm bài hát đang chọn
+    const selectedSongObj = songsState.find(song => song.id === selectedSong);
+
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-8">
@@ -474,26 +487,35 @@ const Piano: React.FC = () => {
                     isPlaying = {isPlaying}
                     onPlay={handlePlayButton}
                 />
+                {/* Record Button */}
                 <button
                     className={`px-4 py-2 rounded font-bold ${isRecording ? "bg-red-500 text-white" : "bg-yellow-400 text-black"}`}
                     onClick={() => isRecording ? stopRecording() : startRecording()}
                 >
                     {isRecording ? "Stop Recording" : "Record"}
                 </button>
+                {/* Share Button */}
+                <button
+                    className="px-4 py-2 rounded font-bold bg-blue-500 text-white"
+                    onClick={() => setShowShareModal(true)}
+                    disabled={!selectedSongObj}
+                >
+                    Share
+                </button>
+                {/* Modal chia se */}
+                {selectedSongObj && (
+                    <ShareSongModal 
+                        song={selectedSongObj} 
+                        open={showShareModal} 
+                        onClose={() => setShowShareModal(false)}
+                        onShare={(title, description) => {
+                            // Xử lý chia sẻ bài hát có id là selectedSongObj.id
+                            console.log("Share song:", selectedSongObj.id, title, description, selectedSongObj.notes);
+                            setShowShareModal(false);
+                        }}                 
+                    />
+                )}
             </div>
-            {/* Hiển thị danh sách nốt đã record */}
-                {/* <h3 className="text-black">Recorded notes:</h3>
-                {recordedNotes.length > 0 && (
-                    <div className="mt-4">
-                        <ul>
-                            {recordedNotes.map((item, idx) => (
-                                <li key={idx}>
-                                    {item.note} - {item.duration}ms
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                )} */}
 
         </div>
     )
