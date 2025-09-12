@@ -172,6 +172,43 @@ const Piano: React.FC = () => {
 //         pressedKeys: tập hợp các nốt đang được nhấn.
     const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
 
+// Thêm state cho record
+    const [isRecording, setIsRecording] = useState(false);
+    const isRecordingRef = useRef(false);
+    const [recordedNotes, setRecordedNotes] = useState<{note: string, duration: number}[]>([]);
+    const recordStartTimeRef = useRef<number | null>(null);
+    const lastNoteTimeRef = useRef<number | null>(null);
+// Đổi songs thành state để thêm bài record động
+    const [songsState, setSongsState] = useState<ISong[]>(songs);
+
+// Khi bắt đầu record
+    const startRecording = () => {
+        setRecordedNotes([]);
+        // console.log(Date.now());
+        setIsRecording(true);
+        // console.log(isRecording);
+        recordStartTimeRef.current = Date.now();
+        lastNoteTimeRef.current = Date.now();
+        // console.log(recordStartTimeRef, lastNoteTimeRef);
+    };
+// Khi dừng record
+    const stopRecording = () => {
+        setIsRecording(false);
+        recordStartTimeRef.current = null;
+        lastNoteTimeRef.current = null;
+        // Thêm bài record mới vào danh sách bài hát với id riêng
+        if (recordedNotes.length > 0) {
+            const newId = `recorded-${Date.now()}`;
+            const recordedSong: ISong = {
+                id: newId,
+                name: `🎤 My Record ${new Date().toLocaleTimeString()}`,
+                notes: recordedNotes,
+            };
+            setSongsState(prev => [...prev, recordedSong]);
+            setSelectedSong(newId);
+        }
+    };
+
 // 3. Khởi tạo AudioContext
 //     Khi component mount, khởi tạo audioContext để phát âm thanh.
     useEffect(() => {
@@ -200,6 +237,9 @@ const Piano: React.FC = () => {
             window.removeEventListener("keyup", handleKeyUp);
         }
     }, []);
+    useEffect(() => {
+    isRecordingRef.current = isRecording;
+    }, [isRecording]);
 
 // 4. Xử lý phát âm thanh //này nữa thay bằng âm thanh kia
 //     Hàm playNote(frequency, duration) dùng Web Audio API để phát âm thanh với tần số và thời lượng tương ứng.
@@ -237,6 +277,32 @@ const Piano: React.FC = () => {
         if (!key || !ctx) return;
         if (ctx.state === "suspended") await ctx.resume();
         if (oscillatorsRef.current[note]) return;
+
+        // console.log(isRecording, recordStartTimeRef.current, lastNoteTimeRef.current);
+            // Thêm đoạn này:
+        if (
+            isRecordingRef.current &&
+            recordStartTimeRef.current !== null &&
+            lastNoteTimeRef.current !== null
+        ) {
+            const now = Date.now();
+            const lastTime = lastNoteTimeRef.current;
+            const startTime = recordStartTimeRef.current
+            setRecordedNotes(prev => {
+                if (prev.length === 0) {
+                    // duration là thời gian từ lúc bắt đầu record đến lúc bấm phím đầu tiên
+                    return [{ note, duration: now - startTime }];
+                } else {
+                    const duration = now - lastTime;
+                    return [...prev, { note, duration }];
+                }
+            });
+            console.log("Recorded note:", note);
+            lastNoteTimeRef.current = now;
+        }
+        else{
+            console.log("dang k record");
+        }
 
         const oscillator = ctx.createOscillator();
         const gainNode = ctx.createGain();
@@ -286,7 +352,7 @@ const Piano: React.FC = () => {
 //         Lặp qua từng nốt trong bài hát, phát âm thanh và cập nhật trạng thái phím.
 //         Đợi đúng thời lượng mỗi nốt rồi chuyển sang nốt tiếp theo.
     const playSong = async () => {
-        const song = songs.find(s => s.id === selectedSong);
+        const song = songsState.find(s => s.id === selectedSong);
         //neu khong tim thay hoac dang phat thi return 
         if(!song){
             return;
@@ -401,15 +467,33 @@ const Piano: React.FC = () => {
                 <SongSelector
                     selectedSong={selectedSong}
                     onSongChange={setSelectedSong}
-                    songs={songs}
+                    songs={songsState}
                 />
                 {/* PlayButton */}
                 <PlayButton 
                     isPlaying = {isPlaying}
-                    
                     onPlay={handlePlayButton}
                 />
+                <button
+                    className={`px-4 py-2 rounded font-bold ${isRecording ? "bg-red-500 text-white" : "bg-yellow-400 text-black"}`}
+                    onClick={() => isRecording ? stopRecording() : startRecording()}
+                >
+                    {isRecording ? "Stop Recording" : "Record"}
+                </button>
             </div>
+            {/* Hiển thị danh sách nốt đã record */}
+                {/* <h3 className="text-black">Recorded notes:</h3>
+                {recordedNotes.length > 0 && (
+                    <div className="mt-4">
+                        <ul>
+                            {recordedNotes.map((item, idx) => (
+                                <li key={idx}>
+                                    {item.note} - {item.duration}ms
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )} */}
 
         </div>
     )
