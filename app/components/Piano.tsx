@@ -421,8 +421,8 @@ const Piano: React.FC = () => {
                 </div>
             </div>
             {/* Khung hướng dẫn */}
-            <div className="hidden md:block mb-4 text-center">
-                <div className="inline-flex gap-4 px-4 py-2 bg-gray-100 rounded shadow text-sm text-gray-700 font-semibold">
+            <div className="mb-4 text-center">
+                <div className="inline-flex flex-wrap gap-4 px-4 py-2 bg-gray-100 rounded shadow text-sm text-gray-700 font-semibold">
                     <span><b>A</b>: C</span>
                     <span><b>W</b>: C#</span>
                     <span><b>S</b>: D</span>
@@ -435,6 +435,9 @@ const Piano: React.FC = () => {
                     <span><b>H</b>: A</span>
                     <span><b>U</b>: A#</span>
                     <span><b>J</b>: B</span>
+                </div>
+                <div className="mt-2 text-xs text-gray-500">
+                    If you are on desktop, you can use your keyboard to play notes.
                 </div>
             </div>
             {/* piano key */}
