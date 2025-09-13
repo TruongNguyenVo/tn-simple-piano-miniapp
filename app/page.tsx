@@ -1,11 +1,16 @@
-import Piano from './components/Piano'
+'use client';
+import { useMiniKit } from '@coinbase/onchainkit/minikit';
+import { useEffect } from 'react';
+import Piano from './components/Piano';
 
-function Page() {
+export default function Page() {
+   const { setFrameReady, isFrameReady } = useMiniKit();
+  useEffect(() => {
+    if (!isFrameReady) setFrameReady();
+  }, [isFrameReady, setFrameReady]);
   return (
     <div>
       <Piano />
     </div>
   )
 }
-
-export default Page

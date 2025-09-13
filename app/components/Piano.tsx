@@ -1,5 +1,5 @@
 'use client'
-import { Music } from "lucide-react";
+import { PianoIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import PianoKey, { IPianoKey } from "./PianoKey";
 import PlayButton from "./PlayButton";
@@ -413,8 +413,8 @@ const Piano: React.FC = () => {
         <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-8">
             {/* Header */}
             <div className="flex items-center gap-3 mb-6">
-                <Music className="text-purple-600 w-8 h-8" />
-                <h1 className="text-3xl font-bold text-gray-800">Simple Piano Mini App</h1>
+                <PianoIcon className="text-purple-600 w-8 h-8" />
+                <h1 className="text-3xl font-bold text-gray-800">Simple Piano</h1>
                 <div className="ml-auto flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg">
                     <span className="text-blue-600 font-medium">🎵 Current Note:</span>
                     <span className="text-blue-800 font-bold text-lg">{currentNote || 'C'}</span>
